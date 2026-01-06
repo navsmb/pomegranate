@@ -22,23 +22,24 @@ func Connect(dial string) (*sql.DB, error) {
 	if dial == "" {
 		return nil, errors.New("empty database url provided")
 	}
-	parsedUrl, err := url.Parse(dial)
+	parsedURL, err := url.Parse(dial)
 	if err != nil {
 		return nil, err
 	}
 	// trim leading slash
-	dbname := strings.Trim(parsedUrl.Path, "/")
-	fmt.Printf("Connecting to database '%s' on host '%s'\n", dbname, parsedUrl.Host)
+	dbname := strings.Trim(parsedURL.Path, "/")
+	fmt.Printf("Connecting to database '%s' on host '%s'\n", dbname, parsedURL.Host)
 	return sql.Open("postgres", dial)
 }
 
+// Database defines the interface for database operations used by migrations.
 type Database interface {
 	ExecContext(context.Context, string, ...interface{}) (sql.Result, error)
 	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
 }
 
-// deprecated use GetMigrationStateContext
+// GetMigrationState is deprecated, use GetMigrationStateContext instead.
 func GetMigrationState(db Database) ([]MigrationRecord, error) {
 	return GetMigrationStateContext(context.TODO(), db)
 }
@@ -67,7 +68,7 @@ func GetMigrationStateContext(ctx context.Context, db Database) ([]MigrationReco
 	if err != nil {
 		return nil, fmt.Errorf("get past migrations: %v", err)
 	}
-	defer rows.Close()
+	defer rows.Close() //nolint:errcheck // error on close is not actionable
 	pastMigrations := []MigrationRecord{}
 	for rows.Next() {
 		var pm MigrationRecord
@@ -79,7 +80,7 @@ func GetMigrationStateContext(ctx context.Context, db Database) ([]MigrationReco
 	return pastMigrations, nil
 }
 
-// deprecated use GetMigrationLogContext
+// GetMigrationLog is deprecated, use GetMigrationLogContext instead.
 func GetMigrationLog(db Database) ([]MigrationLogRecord, error) {
 	return GetMigrationLogContext(context.TODO(), db)
 }
@@ -106,7 +107,7 @@ func GetMigrationLogContext(ctx context.Context, db Database) ([]MigrationLogRec
 	if err != nil {
 		return nil, fmt.Errorf("get migration log: %v", err)
 	}
-	defer rows.Close()
+	defer rows.Close() //nolint:errcheck // error on close is not actionable
 	records := []MigrationLogRecord{}
 	for rows.Next() {
 		var r MigrationLogRecord
@@ -118,7 +119,7 @@ func GetMigrationLogContext(ctx context.Context, db Database) ([]MigrationLogRec
 	return records, nil
 }
 
-// deprecated use MigrateBackwardToContext
+// MigrateBackwardTo is deprecated, use MigrateBackwardToContext instead.
 func MigrateBackwardTo(name string, db Database, allMigrations []Migration, confirm bool) error {
 	return MigrateBackwardToContext(context.TODO(), name, db, allMigrations, confirm)
 }
@@ -157,7 +158,7 @@ func MigrateBackwardToContext(ctx context.Context, name string, db Database, all
 	return nil
 }
 
-// deprecated use MigrateForwardToContext
+// MigrateForwardTo is deprecated, use MigrateForwardToContext instead.
 func MigrateForwardTo(name string, db Database, allMigrations []Migration, confirm bool) error {
 	return MigrateForwardToContext(context.TODO(), name, db, allMigrations, confirm)
 }
@@ -206,7 +207,7 @@ func runMigrationSQLContext(ctx context.Context, db Database, name string, sqlTo
 	return nil
 }
 
-// deprecated use FakeMigrateForwardToContext
+// FakeMigrateForwardTo is deprecated, use FakeMigrateForwardToContext instead.
 func FakeMigrateForwardTo(name string, db Database, allMigrations []Migration, confirm bool) error {
 	return FakeMigrateForwardToContext(context.TODO(), name, db, allMigrations, confirm)
 }

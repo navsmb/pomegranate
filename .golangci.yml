@@ -5,18 +5,10 @@ linters:
   enable:
     - revive
     - staticcheck
-    - gosimple
     - unused
   disable:
     - dupl
-    - staticcheck
 output:
   formats:
     text:
       path: stdout
-      color: true
-issues:
-  exclude:
-    - "runTestCases.*unused"
-    - "svc.BatchAccountImport.*not checked"
-    - "ALL_CAPS"

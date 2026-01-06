@@ -51,7 +51,7 @@ func getConfirm(toRun []Migration, forwardBack string, input io.Reader) error {
 	case "n":
 		return errors.New("cancelled")
 	}
-	return fmt.Errorf("Invalid option: %s", resp)
+	return fmt.Errorf("invalid option: %s", resp)
 }
 
 // getForwardMigrations takes a state of already run migrations, and the list

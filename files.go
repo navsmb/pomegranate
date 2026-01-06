@@ -104,12 +104,12 @@ func NewMigrationTimestamp(dir, name string, timestamp time.Time) error {
 	return nil
 }
 
-// ReadMigrationFs allows one to embed an entire migration folder using the [embed] package.
+// ReadMigrationFS allows one to embed an entire migration folder using the [embed] package.
 //
-//			go:embed migrations-dir
-//			var migrationDir embed.FS
-//		  ...
-//	   migrations, err := ReadMigrationFs(migrationDir)
+//	//go:embed migrations-dir
+//	var migrationDir embed.FS
+//	...
+//	migrations, err := ReadMigrationFS(migrationDir)
 //
 // It is expected that  migrations is a *directory*, and it will be treated as such"
 func ReadMigrationFS(migFolder fs.ReadDirFS) ([]Migration, error) {
@@ -193,6 +193,8 @@ func makeStubName(numPart int, namePart string) string {
 
 // little utility to read the contents of a list of file names into
 // an array of strings which contains the contents.
+//
+//nolint:unused // kept for API compatibility
 func readFileArray(fileNames []string) ([]string, error) {
 	files := []string{}
 
@@ -219,7 +221,7 @@ func readMigration(dir fs.ReadDirFS, migrationName string) (Migration, error) {
 
 	migrationDirs, err := dir.ReadDir(migrationName)
 	if err != nil {
-		return m, fmt.Errorf("Unable to list directory: %w", err)
+		return m, fmt.Errorf("unable to list directory: %w", err)
 	}
 
 	readEntry := func(sqlFilename string) string {
@@ -227,7 +229,7 @@ func readMigration(dir fs.ReadDirFS, migrationName string) (Migration, error) {
 		// these errors are things like `no accces to write` or similar.
 		f, err := dir.Open(path.Join(migrationName, sqlFilename))
 		panicOnError(err, "Unable to open %q: %w", sqlFilename, err)
-		defer f.Close()
+		defer f.Close() //nolint:errcheck // error on close is not actionable
 		b, err := io.ReadAll(f) // we get an error here if we cannot read bytes
 		panicOnError(err, "Unable to read %q: %w", sqlFilename, err)
 		return string(b)
