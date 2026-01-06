@@ -24,7 +24,7 @@ func TestConfirm(t *testing.T) {
 		},
 		{
 			input: "banana\n",
-			err:   errors.New("Invalid option: banana"),
+			err:   errors.New("invalid option: banana"),
 		},
 		{
 			input: "y", // no newline!

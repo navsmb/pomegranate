@@ -1,3 +1,4 @@
+// Package main provides the pmg CLI tool for managing PostgreSQL migrations.
 package main
 
 import (
@@ -9,7 +10,7 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/nav-inc/pomegranate"
+	"github.com/navsmb/pomegranate"
 	"github.com/urfave/cli/v2"
 )
 
@@ -204,11 +205,11 @@ func main() {
 				}
 				w := new(tabwriter.Writer)
 				w.Init(os.Stdout, 5, 0, 1, ' ', tabwriter.Debug)
-				fmt.Fprintln(w, "NAME\t WHEN\t WHO")
+				fmt.Fprintln(w, "NAME\t WHEN\t WHO") //nolint:errcheck // output to stdout
 				for _, m := range migs {
-					fmt.Fprintf(w, "%s\t %s\t %s\n", m.Name, m.Time, m.Who)
+					fmt.Fprintf(w, "%s\t %s\t %s\n", m.Name, m.Time, m.Who) //nolint:errcheck // output to stdout
 				}
-				w.Flush()
+				w.Flush() //nolint:errcheck // output to stdout
 				return nil
 			},
 		},
@@ -227,11 +228,11 @@ func main() {
 				}
 				w := new(tabwriter.Writer)
 				w.Init(os.Stdout, 5, 0, 1, ' ', tabwriter.Debug)
-				fmt.Fprintln(w, "ID\t TIME\t NAME\t OP\t WHO")
+				fmt.Fprintln(w, "ID\t TIME\t NAME\t OP\t WHO") //nolint:errcheck // output to stdout
 				for _, m := range migs {
-					fmt.Fprintf(w, "%d\t %s\t %s\t %s\t %s\n", m.ID, m.Time, m.Name, m.Op, m.Who)
+					fmt.Fprintf(w, "%d\t %s\t %s\t %s\t %s\n", m.ID, m.Time, m.Name, m.Op, m.Who) //nolint:errcheck // output to stdout
 				}
-				w.Flush()
+				w.Flush() //nolint:errcheck // output to stdout
 				return nil
 			},
 		},
@@ -263,6 +264,8 @@ func forward(c *cli.Context, name string) error {
 }
 
 // get arg from position specified by idx. If empty, then prompt for it.
+//
+//nolint:revive // idx kept for API compatibility
 func getArg(c *cli.Context, idx int, prompt string) (string, error) {
 	arg := c.Args().Get(0)
 	if arg != "" {

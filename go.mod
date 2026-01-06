@@ -1,4 +1,4 @@
-module github.com/nav-inc/pomegranate
+module github.com/navsmb/pomegranate
 
 go 1.18
 
